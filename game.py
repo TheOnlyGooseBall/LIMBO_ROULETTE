@@ -1,30 +1,36 @@
-
-import sys
 import random
 
-def clear():
-    print("\n" * 40)
+# ------------------ CORE UTILS ------------------
 
 def clamp(val, low, high):
     return max(low, min(high, val))
 
+
 def nerve_label(n):
-    if n > 70: return "STABLE"
-    if n > 30: return "SHAKY"
+    if n > 70:
+        return "STABLE"
+    if n > 30:
+        return "SHAKY"
     return "COLLAPSING"
 
-def generate_shells(round_num):
-    base = random.choice([4,5,6])
-    base += round_num  
+
+# ------------------ SHELL SYSTEM ------------------
+
+def generate_shells(round_num, difficulty):
+    base = random.choice([4, 5, 6]) + round_num
     pool = []
+
+    # Difficulty shifts probability toward live shells
+    live_bias = 0.30 + (difficulty * 0.05)
+    fuse_bias = 0.20 + (difficulty * 0.03)
 
     for _ in range(base):
         roll = random.random()
-        if roll < 0.35:
+        if roll < live_bias:
             pool.append("live")
-        elif roll < 0.65:
+        elif roll < live_bias + 0.30:
             pool.append("blank")
-        elif roll < 0.85:
+        elif roll < live_bias + 0.30 + fuse_bias:
             pool.append("fuse_2")
         else:
             pool.append("fuse_3")
@@ -33,16 +39,17 @@ def generate_shells(round_num):
     return pool
 
 
+# ------------------ PSYCHOLOGY ------------------
+
 def update_psychology(state):
     print(f"\n[ NERVE: {state['player_nerve']}/{state['max_nerve']} | {nerve_label(state['player_nerve'])} ]")
 
     expired = []
 
-    for i, fuse in enumerate(state['active_fuses']):
+    for i, fuse in enumerate(state["active_fuses"]):
         fuse["timer"] -= 1
         state["player_nerve"] -= 5
         print(f"-> Fuse ticking... {fuse['timer']} turns left")
-
         if fuse["timer"] <= 0:
             expired.append(i)
 
@@ -55,30 +62,38 @@ def update_psychology(state):
     state["player_nerve"] = clamp(state["player_nerve"], 0, state["max_nerve"])
 
 
-def give_items(state, round_num):
+# ------------------ ITEMS ------------------
+
+def give_items(state):
     items = ["pills", "mirror", "pliers"]
-    state["player_items"] = random.sample(items, k=min(2, len(items)))
+    state["player_items"] = random.sample(items, 2)
+
 
 def use_item(state):
+    if not state["player_items"]:
+        print("No items.")
+        return True
+
     print("Items:", state["player_items"])
     choice = input("Use which item? ").strip().lower()
 
     if choice not in state["player_items"]:
         print("Invalid item.")
-        return False
+        return True
 
     if choice == "pills":
-        heal = 15
-        state["player_nerve"] += heal
+        state["player_nerve"] += 15
         print("You steady your breathing.")
+
     elif choice == "mirror":
         if state["shell_list"]:
             print("Next shell glimpse:", state["shell_list"][0])
         else:
             print("Nothing loaded.")
+
     elif choice == "pliers":
         if state["active_fuses"]:
-            print("You rip a fuse off your chest.")
+            print("You rip a fuse off.")
             state["active_fuses"].pop(0)
             state["player_nerve"] -= 10
         else:
@@ -88,35 +103,28 @@ def use_item(state):
     state["player_nerve"] = clamp(state["player_nerve"], 0, state["max_nerve"])
     return True
 
-def player_turn(state):
 
+# ------------------ PLAYER TURN ------------------
+
+def player_turn(state):
     update_psychology(state)
+
     if state["player_health"] <= 0:
         return False
 
-    flip = False
-    hallucinate = False
+    flip = state["player_nerve"] < 30 and random.random() < 0.2
+    hallucinate = state["player_nerve"] < 20 and random.random() < 0.25
 
-    if state["player_nerve"] < 30 and random.random() < 0.2:
-        flip = True
-
-    if state["player_nerve"] < 20 and random.random() < 0.25:
-        hallucinate = True
-
-    print(f"\nYOUR TURN | HP:{state['player_health']} Dealer:{state['dealer_health']}")
+    print(f"\nYOUR TURN | HP:{state['player_health']} Dealer:{state['dealer_health']} Difficulty:{state['difficulty']}")
 
     if hallucinate:
-        fake = random.choice(["live","blank","fuse_2"])
+        fake = random.choice(["live", "blank", "fuse_2"])
         print(f"[You think the next shell is: {fake}]")
 
     choice = input("(S)hoot or (I)tem? ").strip().upper()
 
     if choice == "I":
-        if not state["player_items"]:
-            print("No items.")
-            return True
-        use_item(state)
-        return True
+        return use_item(state)
 
     if not state["shell_list"]:
         return False
@@ -134,13 +142,11 @@ def player_turn(state):
             print("BANG. You shot yourself.")
             state["player_health"] -= 1
             state["player_nerve"] -= 20
-            return False
         elif "fuse" in shell:
             timer = int(shell.split("_")[1])
             print(f"Fuse attached. {timer} turns.")
             state["active_fuses"].append({"timer": timer})
             state["player_nerve"] -= 15
-            return False
         else:
             print("Blank. Relief.")
             state["player_nerve"] += 10
@@ -159,16 +165,19 @@ def player_turn(state):
         else:
             print("Blank.")
 
-        return False
+    state["player_nerve"] = clamp(state["player_nerve"], 0, state["max_nerve"])
+    return False
+
+
+# ------------------ DEALER AI ------------------
 
 def dealer_turn(state):
-
     print("\nDEALER TURN")
 
-    if state.get("dealer_fuse"):
+    # Dealer fuse handling
+    if state["dealer_fuse"] is not None:
         state["dealer_fuse"] -= 1
         print("Dealer fuse ticking...")
-
         if state["dealer_fuse"] <= 0:
             print("Dealer explodes.")
             state["dealer_health"] -= 2
@@ -177,7 +186,27 @@ def dealer_turn(state):
     if not state["shell_list"]:
         return
 
+    # Smart targeting logic
+    shell = state["shell_list"][0]  # peek
+
+    aggressive = state["difficulty"] >= 2
+
+    if shell == "blank" and aggressive and state["dealer_health"] > state["player_health"]:
+        target = "self"
+    else:
+        target = "player"
+
     shell = state["shell_list"].pop(0)
+
+    if target == "self":
+        print("Dealer shoots self.")
+        if shell == "live":
+            state["dealer_health"] -= 1
+        elif "fuse" in shell:
+            state["dealer_fuse"] = int(shell.split("_")[1])
+        else:
+            print("Blank.")
+        return
 
     if shell == "live":
         print("Dealer shoots you.")
@@ -191,52 +220,17 @@ def dealer_turn(state):
     else:
         print("Dealer fires blank.")
 
+    state["player_nerve"] = clamp(state["player_nerve"], 0, state["max_nerve"])
 
-def key_trial(state):
 
-    print("\nFINAL DOOR")
-
-    nerve = state["player_nerve"]
-
-    if nerve >= 70:
-        keys = 3
-    elif nerve >= 40:
-        keys = 4
-    elif nerve >= 10:
-        keys = 5
-    else:
-        keys = 6
-
-    correct = random.randint(1, keys)
-    attempts = 3
-
-    while attempts > 0:
-        print(f"Keys: {keys} | Attempts: {attempts}")
-        try:
-            pick = int(input("Pick key: "))
-        except:
-            attempts -= 1
-            continue
-
-        if pick == correct:
-            print("The door opens. You escape LIMBO.")
-            return True
-        else:
-            print("Wrong. The keys reshuffle.")
-            state["player_nerve"] -= 15
-            attempts -= 1
-            correct = random.randint(1, keys)
-
-    print("You remain in Limbo.")
-    return False
-
+# ------------------ GAME LOOP ------------------
 
 def play_game():
-
-    name = input("Sign the waiver. Name: ")
+    print("Select Difficulty: 1 = Easy | 2 = Normal | 3 = Hard")
+    difficulty = int(input("Choice: "))
+    difficulty = clamp(difficulty, 1, 3)
 
     state = {
-        "player_name": name,
         "player_health": 4,
         "dealer_health": 4,
         "player_nerve": 75,
@@ -244,41 +238,37 @@ def play_game():
         "active_fuses": [],
         "dealer_fuse": None,
         "shell_list": [],
-        "player_items": []
+        "player_items": [],
+        "difficulty": difficulty
     }
 
-    for round_num in range(1,4):
-
+    for round_num in range(1, 4):
         print(f"\n=== ROUND {round_num} ===")
-        give_items(state, round_num)
-        state["shell_list"] = generate_shells(round_num)
-
-        turn = True
+        give_items(state)
+        state["shell_list"] = generate_shells(round_num, difficulty)
 
         while state["player_health"] > 0 and state["dealer_health"] > 0:
-
             if not state["shell_list"]:
-                state["shell_list"] = generate_shells(round_num)
+                state["shell_list"] = generate_shells(round_num, difficulty)
 
-            if turn:
-                turn = player_turn(state)
-            else:
-                dealer_turn(state)
-                turn = True
+            if player_turn(state):
+                continue
+            dealer_turn(state)
 
         if state["player_health"] <= 0:
-            print("You died in Limbo..... PLAY AGAIN?")
+            print("You died in Limbo.")
             return
 
         print("Dealer defeated.")
-        state["dealer_health"] += 2
-        state["max_nerve"] -= 10  # permanent decay
-        state["player_nerve"] = clamp(state["player_nerve"],0,state["max_nerve"])
+        state["dealer_health"] = 4 + round_num
+        state["max_nerve"] -= 10
+        state["player_nerve"] = clamp(state["player_nerve"], 0, state["max_nerve"])
 
-    print("\nThe shells stop. The door remains.")
-    key_trial(state)
-
+    print("\nYou survived all rounds.")
 
 
-
-play_game()
+while True:
+    play_game()
+    again = input("Play again? (Y/N): ").strip().upper()
+    if again != "Y":
+        break
