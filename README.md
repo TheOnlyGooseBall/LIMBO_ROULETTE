@@ -1,81 +1,14 @@
-# LIMBO_ROULETTE
+#LIMBO ROULETTE
 
-Limbo Roulette is a fast-paced psychological horror duel disguised as a game of chance. You sit across from a silent Dealer. A shotgun rotates between you. Some shells are live. Some are blanks. Some attach timed fuses to your body.
+is a psychological duel disguised as a retro RPG encounter.
 
-But survival isn’t just about avoiding bullets.
+You sit across from a silent Dealer inside a dark, CRT-lit void. A revolver chamber spins between you. Some shells are live. Some are blanks. Some carry unstable fuses that detonate after a delay. Every decision carries risk, and every mistake compounds pressure.
 
-You have a Nerve meter. Every explosion, ticking fuse, and close call damages your mental stability. As your Nerve drops:
+The game plays out across six escalating rounds. Each round increases the number of shells and the Dealer’s resilience. Live rounds become more common. Fuses stack. Tension rises. There is no randomness without consequence — probability is weaponized.
 
-– Your aim may flip without warning
-– You may hallucinate the next shell
-– Your decisions become unreliable
-– The final escape becomes harder
+The interface mimics a classic 16-bit battle system. You select FIGHT, ACT, ITEM, or MERCY — but most options offer little comfort. FIGHT determines who faces the next chamber. A blank may grant momentum. A live round ends momentum immediately. A fuse turns the fight into a countdown.
 
-You must survive multiple escalating rounds against the Dealer. Even if you defeat him, you are not free. The final door is locked. Your mental state determines how many keys you must choose from. Choose wrong too many times, and you remain in Limbo.
+After surviving six rounds, the gun falls silent. You face a final door. Several keys appear. Only one unlocks escape. You have limited attempts. Choose wrong, and the door reshuffles. Choose correctly, and you leave Limbo.
 
-This is not just about luck. It is about risk control under psychological pressure.
-
-#How to Play
-
-#Objective
-Survive three rounds against the Dealer and pass the final Key Trial.
-
-#Core Mechanics
-
-#Shooting
-On your turn, you may:
-– Shoot yourself
-– Shoot the Dealer
-– Use an item
-
-If you shoot:
-– Live shell = 1 damage
-– Blank = no damage
-– Fuse shell = attaches a timed explosive (detonates after X turns)
-
-Fuse explosions deal heavy damage and reduce Nerve.
-
-#Nerve System
-
-Nerve represents your mental stability.
-
-High Nerve:
-– Clear information
-– Stable inputs
-– Easier final escape
-
-Low Nerve:
-– Controls may flip
-– Shell information may be false
-– Harder key selection at the end
-
-If Nerve collapses, the game becomes more chaotic.
-
-#Items
-
-You may receive items each round:
-
-Pills — restore Nerve
-Mirror — peek at the next shell
-Pliers — remove one active fuse (costs Nerve)
-
-Use items carefully. You only get a few.
-
-#Dealer
-
-The Dealer shoots strategically and can force fuse shells onto you. Later rounds escalate difficulty. After each round:
-– Dealer health increases
-– Your maximum Nerve permanently decreases
-
-Pressure builds over time.
-
-#The Final Door — Key Trial
-
-If you survive all rounds, you must choose the correct key.
-
-The lower your Nerve:
-– The more keys appear
-– The harder escape becomes
-
-You have 3 attempts. Wrong answers reshuffle the correct key.
-
+The core theme is not survival by strength. It is survival under pressure.
+Control erodes. Risk compounds. Composure determines outcome.
