@@ -1,37 +1,58 @@
 LIMBO ROULETTE
 
-LIMBO ROULETTE is a browser-based psychological roulette duel built with HTML5 Canvas and vanilla JavaScript. Inspired by retro RPG battle systems and CRT-era visuals, the game blends chance, tension, and escalating risk into a fast-paced encounter against a silent Dealer.
+Limbo Roulette is a psychological horror duel disguised as a game of chance. You sit across from a silent Dealer. A rotating chamber of live rounds, blanks, and timed fuses decides who survives each turn.
 
-Overview
+But this is not just Russian roulette.
 
-You face a revolver chamber loaded with a mix of live rounds, blanks, and timed fuses. Each round increases difficulty — more shells, higher danger probability, and a stronger opponent.
+You have a Nerve meter. Every explosion, ticking fuse, and close call erodes your mental stability. As your Nerve drops, your perception becomes unreliable. Your aim may flip. You may hallucinate the next shell. Panic becomes a mechanic.
 
-The game progresses through six escalating rounds. Survive them all, and you reach the Final Door: a key trial where only one choice leads to escape.
+Core Features
 
-There is no mercy system. There is no negotiation. Only probability and composure.
+• Turn-based duel system
+• Dynamic Nerve (mental stability) mechanic
+• Timed fuse system with delayed consequences
+• Item usage (Pills, Mirror, Pliers)
+• Smart Dealer AI that adapts on higher difficulties
+• Difficulty settings (Easy / Normal / Hard)
+• Multi-round escalation
+• Final survival phase
 
-Core Mechanics
+Difficulty System
 
-Turn-based duel system (Player vs Dealer)
+Difficulty directly alters:
 
-Randomized chamber generation with scaling live-round probability
+Probability of live shells
 
-Fuse mechanic with delayed damage
+Frequency of fuse rounds
 
-Retro RPG-style battle interface (FIGHT / ACT / ITEM / MERCY)
+Dealer decision-making aggression
 
-CRT visual overlay and pixel aesthetic
+Higher difficulty means fewer safe blanks and a more strategic opponent.
 
-Synthesized Web Audio API sound effects
+How to Play
 
-Final key-based ending sequence
+Run the script with Python 3.
 
-Difficulty Scaling
+Select your difficulty level.
 
-Each round increases Dealer HP
+Survive three escalating rounds.
 
-Shell count scales with round number
+Manage your health and mental stability.
 
-Live-round probability increases progressively
+Defeat the Dealer.
 
-Final escape sequence depends on correct key selection
+If you survive, you escape Limbo.
+
+If not, you remain.
+
+Design Focus
+
+This project explores:
+
+Psychological instability as a gameplay system
+
+Risk vs. control decision-making
+
+Tension through delayed consequences
+
+Adaptive AI behavior in a simple text environment
