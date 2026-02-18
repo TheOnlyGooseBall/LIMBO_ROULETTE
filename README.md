@@ -1,14 +1,37 @@
-#LIMBO ROULETTE
+LIMBO ROULETTE
 
-is a psychological duel disguised as a retro RPG encounter.
+LIMBO ROULETTE is a browser-based psychological roulette duel built with HTML5 Canvas and vanilla JavaScript. Inspired by retro RPG battle systems and CRT-era visuals, the game blends chance, tension, and escalating risk into a fast-paced encounter against a silent Dealer.
 
-You sit across from a silent Dealer inside a dark, CRT-lit void. A revolver chamber spins between you. Some shells are live. Some are blanks. Some carry unstable fuses that detonate after a delay. Every decision carries risk, and every mistake compounds pressure.
+Overview
 
-The game plays out across six escalating rounds. Each round increases the number of shells and the Dealer’s resilience. Live rounds become more common. Fuses stack. Tension rises. There is no randomness without consequence — probability is weaponized.
+You face a revolver chamber loaded with a mix of live rounds, blanks, and timed fuses. Each round increases difficulty — more shells, higher danger probability, and a stronger opponent.
 
-The interface mimics a classic 16-bit battle system. You select FIGHT, ACT, ITEM, or MERCY — but most options offer little comfort. FIGHT determines who faces the next chamber. A blank may grant momentum. A live round ends momentum immediately. A fuse turns the fight into a countdown.
+The game progresses through six escalating rounds. Survive them all, and you reach the Final Door: a key trial where only one choice leads to escape.
 
-After surviving six rounds, the gun falls silent. You face a final door. Several keys appear. Only one unlocks escape. You have limited attempts. Choose wrong, and the door reshuffles. Choose correctly, and you leave Limbo.
+There is no mercy system. There is no negotiation. Only probability and composure.
 
-The core theme is not survival by strength. It is survival under pressure.
-Control erodes. Risk compounds. Composure determines outcome.
+Core Mechanics
+
+Turn-based duel system (Player vs Dealer)
+
+Randomized chamber generation with scaling live-round probability
+
+Fuse mechanic with delayed damage
+
+Retro RPG-style battle interface (FIGHT / ACT / ITEM / MERCY)
+
+CRT visual overlay and pixel aesthetic
+
+Synthesized Web Audio API sound effects
+
+Final key-based ending sequence
+
+Difficulty Scaling
+
+Each round increases Dealer HP
+
+Shell count scales with round number
+
+Live-round probability increases progressively
+
+Final escape sequence depends on correct key selection
